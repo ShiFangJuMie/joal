@@ -3,6 +3,9 @@ package org.araymond.joal.core.ttorrent.client.announcer.tracker;
 import com.turn.ttorrent.client.announce.AnnounceException;
 import com.turn.ttorrent.common.protocol.TrackerMessage;
 import com.turn.ttorrent.common.protocol.http.HTTPTrackerMessage;
+import com.turn.ttorrent.bcodec.BDecoder;
+import com.turn.ttorrent.bcodec.BEncoder;
+import com.turn.ttorrent.bcodec.BEValue;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.http.HttpEntity;
@@ -11,6 +14,7 @@ import org.apache.http.client.ResponseHandler;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Map;
 
 @Slf4j
 public class TrackerResponseHandler implements ResponseHandler<TrackerMessage> {
@@ -43,6 +47,24 @@ public class TrackerResponseHandler implements ResponseHandler<TrackerMessage> {
                 final String message = "Error reading tracker response! HTTP Status: " + response.getStatusLine().getStatusCode() + ", Body: " + bodyStr;
                 throw new IOException(message, new AnnounceException(message, ioe));
             } catch (final TrackerMessage.MessageValidationException mve) {
+                if ("Unknown HTTP tracker message!".equals(mve.getMessage())) {
+                    try {
+                        final byte[] bodyBytes = outputStream.toByteArray();
+                        final BEValue decoded = BDecoder.bdecode(ByteBuffer.wrap(bodyBytes));
+                        if (decoded != null) {
+                            final Map<String, BEValue> params = decoded.getMap();
+                            if (params != null && params.containsKey("peers6") && !params.containsKey("peers")) {
+                                // Put an empty peers array to satisfy ttorrent-core 1.5 HTTPTrackerMessage.parse()
+                                params.put("peers", new BEValue(new byte[0]));
+                                final byte[] fixedBody = BEncoder.bencode(params).array();
+                                return HTTPTrackerMessage.parse(ByteBuffer.wrap(fixedBody));
+                            }
+                        }
+                    } catch (final Exception ignored) {
+                        // If Bencode patch fails, fall through to the original exception throwing
+                    }
+                }
+
                 final String bodyStr = new String(outputStream.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
                 final String message = "Tracker message violates expected protocol (" + mve.getMessage() + ") HTTP Status: " + response.getStatusLine().getStatusCode() + ", Body: " + bodyStr;
                 throw new IOException(message, new AnnounceException(message, mve));
