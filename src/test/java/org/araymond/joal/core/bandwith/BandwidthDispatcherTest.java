@@ -60,7 +60,7 @@ public class BandwidthDispatcherTest {
         final InfoHash infoHash = new InfoHash(new byte[]{12});
         final BandwidthDispatcher bandwidthDispatcher = new BandwidthDispatcher(2, speedProvider);
 
-        bandwidthDispatcher.registerTorrent(infoHash);
+        bandwidthDispatcher.registerTorrent(infoHash, "fake-torrent-name");
         bandwidthDispatcher.start();
         Thread.sleep(10);
         final TorrentSeedStats seedStats = bandwidthDispatcher.getSeedStatForTorrent(infoHash);
@@ -81,7 +81,7 @@ public class BandwidthDispatcherTest {
         final InfoHash infoHash = new InfoHash(new byte[]{12});
         final BandwidthDispatcher bandwidthDispatcher = new BandwidthDispatcher(2, speedProvider);
 
-        bandwidthDispatcher.registerTorrent(infoHash);
+        bandwidthDispatcher.registerTorrent(infoHash, "fake-torrent-name");
         bandwidthDispatcher.updateTorrentPeers(infoHash, 0, 100);
         bandwidthDispatcher.start();
         Thread.sleep(10);
@@ -103,7 +103,7 @@ public class BandwidthDispatcherTest {
         final InfoHash infoHash = new InfoHash(new byte[]{12});
         final BandwidthDispatcher bandwidthDispatcher = new BandwidthDispatcher(2, speedProvider);
 
-        bandwidthDispatcher.registerTorrent(infoHash);
+        bandwidthDispatcher.registerTorrent(infoHash, "fake-torrent-name");
         bandwidthDispatcher.updateTorrentPeers(infoHash, 100, 0);
         bandwidthDispatcher.start();
         Thread.sleep(10);
@@ -125,7 +125,7 @@ public class BandwidthDispatcherTest {
         final InfoHash infoHash = new InfoHash(new byte[]{12});
         final BandwidthDispatcher bandwidthDispatcher = new BandwidthDispatcher(2, speedProvider);
 
-        bandwidthDispatcher.registerTorrent(infoHash);
+        bandwidthDispatcher.registerTorrent(infoHash, "fake-torrent-name");
         bandwidthDispatcher.updateTorrentPeers(infoHash, 10, 10);
 
         bandwidthDispatcher.start();
@@ -150,9 +150,9 @@ public class BandwidthDispatcherTest {
         final InfoHash infoHash2 = new InfoHash(new byte[]{100});
         final BandwidthDispatcher bandwidthDispatcher = new BandwidthDispatcher(2, speedProvider);
 
-        bandwidthDispatcher.registerTorrent(infoHash);
+        bandwidthDispatcher.registerTorrent(infoHash, "fake-torrent-name");
         bandwidthDispatcher.updateTorrentPeers(infoHash, 10, 10);
-        bandwidthDispatcher.registerTorrent(infoHash2);
+        bandwidthDispatcher.registerTorrent(infoHash2, "fake-torrent-name-2");
         bandwidthDispatcher.updateTorrentPeers(infoHash2, 20, 30);
         bandwidthDispatcher.start();
         Thread.sleep(30);
@@ -180,7 +180,7 @@ public class BandwidthDispatcherTest {
         for (int i = 0; i < 25; ++i) {
             final InfoHash infoHash = new InfoHash((String.valueOf(i)).getBytes());
             futures.add(executorService.submit(() -> {
-                bandwidthDispatcher.registerTorrent(infoHash);
+                bandwidthDispatcher.registerTorrent(infoHash, "fake-torrent-name");
                 bandwidthDispatcher.updateTorrentPeers(infoHash, 20, 50);
             }));
         }
@@ -204,7 +204,7 @@ public class BandwidthDispatcherTest {
         bandwidthDispatcher.setSpeedListener(speedListener);
 
         final InfoHash infoHash = new InfoHash(new byte[]{12});
-        bandwidthDispatcher.registerTorrent(infoHash);
+        bandwidthDispatcher.registerTorrent(infoHash, "fake-torrent-name");
         bandwidthDispatcher.updateTorrentPeers(infoHash, 10, 10);
         Thread.sleep(30);
 

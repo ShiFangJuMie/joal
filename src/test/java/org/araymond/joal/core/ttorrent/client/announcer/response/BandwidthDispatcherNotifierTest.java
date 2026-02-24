@@ -72,12 +72,13 @@ public class BandwidthDispatcherNotifierTest {
         final InfoHash infoHash = new InfoHash("qjfqjbqdui".getBytes());
         final Announcer announcer = mock(Announcer.class);
         doReturn(infoHash).when(announcer).getTorrentInfoHash();
+        doReturn("fake-torrent-name").when(announcer).getTorrentName();
         final SuccessAnnounceResponse successAnnounceResponse = mock(SuccessAnnounceResponse.class);
         doReturn(10).when(successAnnounceResponse).getLeechers();
         doReturn(15).when(successAnnounceResponse).getSeeders();
         notifier.onAnnounceStartSuccess(announcer, successAnnounceResponse);
 
-        Mockito.verify(dispatcher, times(1)).registerTorrent(ArgumentMatchers.eq(infoHash));
+        Mockito.verify(dispatcher, times(1)).registerTorrent(ArgumentMatchers.eq(infoHash), ArgumentMatchers.eq("fake-torrent-name"));
         Mockito.verify(dispatcher, times(1)).updateTorrentPeers(ArgumentMatchers.eq(infoHash), ArgumentMatchers.eq(15), ArgumentMatchers.eq(10));
         Mockito.verifyNoMoreInteractions(dispatcher);
     }
