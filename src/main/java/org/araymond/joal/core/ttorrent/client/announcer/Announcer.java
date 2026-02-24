@@ -58,6 +58,16 @@ public class Announcer implements AnnouncerFacade {
         this.trackerClient = trackerClient;
     }
 
+    private String obfuscateExceptionMessage(final Exception e) {
+        if (e == null || e.getMessage() == null) {
+            return "null";
+        }
+        String message = e.getMessage();
+        // 屏蔽所有 URL 参数的值，将类似 ?key=value 或 &key=value 替换为 ?key=*** 或 &key=***
+        message = message.replaceAll("([?&][^=]+)=[^&\\s]+", "$1=***");
+        return message;
+    }
+
     public SuccessAnnounceResponse announce(final RequestEvent event) throws AnnounceException, TooManyAnnouncesFailedInARowException {
         log.debug("Attempt to announce {} for {}", event.getEventName(), this.getTorrentName());
 
@@ -79,13 +89,15 @@ public class Announcer implements AnnouncerFacade {
             return responseMessage;
         } catch (final Exception e) {
             this.consecutiveFails++;
+            final String safeMessage = obfuscateExceptionMessage(e);
+            
             if (this.consecutiveFails >= 5) {  // TODO: move to config
                 log.warn("[{}] has failed to announce {} times in a row", this.getTorrentName(), this.consecutiveFails);
-                log.warn("Detailed announce failure reason: {}", e.getMessage());
+                log.warn("Detailed announce failure reason: {}", safeMessage);
                 throw new TooManyAnnouncesFailedInARowException(torrent);
             } else {
                 log.info("[{}] has failed to announce {}. time", this.getTorrentName(), this.consecutiveFails);
-                log.info("Detailed announce failure reason: {}", e.getMessage());
+                log.info("Detailed announce failure reason: {}", safeMessage);
             }
 
             throw e;
