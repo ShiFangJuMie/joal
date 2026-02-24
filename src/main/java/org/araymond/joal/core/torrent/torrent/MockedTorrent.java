@@ -4,6 +4,7 @@ import com.turn.ttorrent.bcodec.InvalidBEncodingException;
 import com.turn.ttorrent.common.Torrent;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
+import java.lang.reflect.Field;
 
 /**
  * Created by raymo on 23/01/2017.
@@ -18,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 @SuppressWarnings("ClassWithOnlyPrivateConstructors")
 @EqualsAndHashCode(callSuper = false)
 @Getter
+@Slf4j
 public class MockedTorrent extends Torrent {
     public static final Charset BYTE_ENCODING = Charset.forName(Torrent.BYTE_ENCODING);
 
@@ -49,6 +52,23 @@ public class MockedTorrent extends Torrent {
         }
 
         this.torrentInfoHash = new InfoHash(this.getInfoHash());
+        
+        this.clearUnneededBaseClassMemory();
+    }
+
+    private void clearUnneededBaseClassMemory() {
+        final String[] fieldsToClear = {"encoded", "encoded_info", "decoded", "decoded_info"};
+        for (final String fieldName : fieldsToClear) {
+            try {
+                final Field field = Torrent.class.getDeclaredField(fieldName);
+                field.setAccessible(true);
+                field.set(this, null);
+            } catch (final NoSuchFieldException | IllegalAccessException e) {
+                if (log.isTraceEnabled()) {
+                    log.trace("Could not clear field {} from Torrent class to save memory", fieldName, e);
+                }
+            }
+        }
     }
 
     public static MockedTorrent fromFile(final File torrentFile) throws IOException, NoSuchAlgorithmException {
