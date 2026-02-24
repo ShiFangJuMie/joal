@@ -30,7 +30,7 @@ public class MockedTorrentMemoryTest {
         }
         
         System.out.println("Size: " + torrent.getSize());
-        System.out.println("InfoHash: " + torrent.getTorrentInfoHash().getHex());
+        System.out.println("InfoHash: " + torrent.getTorrentInfoHash().getHumanReadable());
         try {
             System.out.println("Torrent name after: " + torrent.getName());
         } catch(Exception e) {
