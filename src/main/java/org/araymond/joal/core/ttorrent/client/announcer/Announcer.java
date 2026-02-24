@@ -59,7 +59,7 @@ public class Announcer implements AnnouncerFacade {
     }
 
     public SuccessAnnounceResponse announce(final RequestEvent event) throws AnnounceException, TooManyAnnouncesFailedInARowException {
-        log.debug("Attempt to announce {} for {}", event.getEventName(), this.torrent.getTorrentInfoHash().getHumanReadable());
+        log.debug("Attempt to announce {} for {}", event.getEventName(), this.getTorrentName());
 
         try {
             this.lastAnnouncedAt = LocalDateTime.now();
@@ -68,7 +68,7 @@ public class Announcer implements AnnouncerFacade {
                     this.announceDataAccessor.getHttpHeadersForTorrent()
             );
             log.info("{} has announced successfully. Response: {} seeders, {} leechers, {}s interval",
-                    this.torrent.getTorrentInfoHash().getHumanReadable(), responseMessage.getSeeders(), responseMessage.getLeechers(), responseMessage.getInterval());
+                    this.getTorrentName(), responseMessage.getSeeders(), responseMessage.getLeechers(), responseMessage.getInterval());
 
             this.reportedUploadBytes = announceDataAccessor.getUploaded(this.torrent.getTorrentInfoHash());
             this.lastKnownInterval = responseMessage.getInterval();
@@ -80,10 +80,10 @@ public class Announcer implements AnnouncerFacade {
         } catch (final Exception e) {
             this.consecutiveFails++;
             if (this.consecutiveFails >= 5) {  // TODO: move to config
-                log.warn("[{}] has failed to announce {} times in a row", this.torrent.getTorrentInfoHash().getHumanReadable(), this.consecutiveFails);
+                log.warn("[{}] has failed to announce {} times in a row", this.getTorrentName(), this.consecutiveFails);
                 throw new TooManyAnnouncesFailedInARowException(torrent);
             } else {
-                log.info("[{}] has failed to announce {}. time", this.torrent.getTorrentInfoHash().getHumanReadable(), this.consecutiveFails);
+                log.info("[{}] has failed to announce {}. time", this.getTorrentName(), this.consecutiveFails);
             }
 
             throw e;

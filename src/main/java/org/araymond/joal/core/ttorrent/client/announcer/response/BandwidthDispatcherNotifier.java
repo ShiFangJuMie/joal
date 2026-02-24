@@ -21,9 +21,9 @@ public class BandwidthDispatcherNotifier implements AnnounceResponseHandler {
 
     @Override
     public void onAnnounceStartSuccess(final Announcer announcer, final SuccessAnnounceResponse result) {
-        log.debug("Register [{}] in bandwidth dispatcher and update stats", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Register [{}] in bandwidth dispatcher and update stats", announcer.getTorrentName());
         final InfoHash infoHash = announcer.getTorrentInfoHash();
-        this.bandwidthDispatcher.registerTorrent(infoHash);
+        this.bandwidthDispatcher.registerTorrent(infoHash, announcer.getTorrentName());
         this.bandwidthDispatcher.updateTorrentPeers(infoHash, result.getSeeders(), result.getLeechers());
     }
 
@@ -34,7 +34,7 @@ public class BandwidthDispatcherNotifier implements AnnounceResponseHandler {
 
     @Override
     public void onAnnounceRegularSuccess(final Announcer announcer, final SuccessAnnounceResponse result) {
-        log.debug("Update [{}] stats in bandwidth dispatcher", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Update [{}] stats in bandwidth dispatcher", announcer.getTorrentName());
         final InfoHash infoHash = announcer.getTorrentInfoHash();
         this.bandwidthDispatcher.updateTorrentPeers(infoHash, result.getSeeders(), result.getLeechers());
     }
@@ -46,7 +46,7 @@ public class BandwidthDispatcherNotifier implements AnnounceResponseHandler {
 
     @Override
     public void onAnnounceStopSuccess(final Announcer announcer, final SuccessAnnounceResponse result) {
-        log.debug("Unregister [{}] from bandwidth dispatcher", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Unregister [{}] from bandwidth dispatcher", announcer.getTorrentName());
         this.bandwidthDispatcher.unregisterTorrent(announcer.getTorrentInfoHash());
     }
 
@@ -57,7 +57,7 @@ public class BandwidthDispatcherNotifier implements AnnounceResponseHandler {
 
     @Override
     public void onTooManyAnnounceFailedInARow(final Announcer announcer, final TooManyAnnouncesFailedInARowException e) {
-        log.debug("Unregister [{}] from bandwidth dispatcher", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Unregister [{}] from bandwidth dispatcher", announcer.getTorrentName());
         this.bandwidthDispatcher.unregisterTorrent(announcer.getTorrentInfoHash());
     }
 }

@@ -35,6 +35,7 @@ public class BandwidthDispatcher implements BandwidthDispatcherFacade, Runnable 
     private final WeightHolder<InfoHash> weightHolder = new WeightHolder<>(new PeersAwareWeightCalculator());
     private final Map<InfoHash, TorrentSeedStats> torrentsSeedStats = new HashMap<>();
     private final Map<InfoHash, Speed> speedMap = new HashMap<>();
+    private final Map<InfoHash, String> torrentNames = new HashMap<>();
     private SpeedChangedListener speedChangedListener;
     private int threadLoopCounter;
     private volatile boolean stop;
@@ -117,8 +118,13 @@ public class BandwidthDispatcher implements BandwidthDispatcherFacade, Runnable 
         }
     }
 
+    private String getTorrentName(final InfoHash infoHash) {
+        final String name = this.torrentNames.get(infoHash);
+        return name != null ? name : infoHash.getHumanReadable();
+    }
+
     public void updateTorrentPeers(final InfoHash infoHash, final int seeders, final int leechers) {
-        log.debug("Updating Peers stats for {}", infoHash.getHumanReadable());
+        log.debug("Updating Peers stats for {}", getTorrentName(infoHash));
         this.lock.writeLock().lock();
         try {
             this.weightHolder.addOrUpdate(infoHash, new Peers(seeders, leechers));
@@ -128,10 +134,11 @@ public class BandwidthDispatcher implements BandwidthDispatcherFacade, Runnable 
         }
     }
 
-    public void registerTorrent(final InfoHash infoHash) {
-        log.debug("{} has been added to bandwidth dispatcher", infoHash.getHumanReadable());
+    public void registerTorrent(final InfoHash infoHash, final String torrentName) {
+        log.debug("{} has been added to bandwidth dispatcher", torrentName);
         this.lock.writeLock().lock();
         try {
+            this.torrentNames.put(infoHash, torrentName);
             this.torrentsSeedStats.put(infoHash, new TorrentSeedStats());
             this.speedMap.put(infoHash, new Speed(0));
         } finally {
@@ -140,9 +147,10 @@ public class BandwidthDispatcher implements BandwidthDispatcherFacade, Runnable 
     }
 
     public void unregisterTorrent(final InfoHash infoHash) {
-        log.debug("{} has been removed from bandwidth dispatcher", infoHash.getHumanReadable());
+        log.debug("{} has been removed from bandwidth dispatcher", getTorrentName(infoHash));
         this.lock.writeLock().lock();
         try {
+            this.torrentNames.remove(infoHash);
             this.weightHolder.remove(infoHash);
             this.torrentsSeedStats.remove(infoHash);
             this.speedMap.remove(infoHash);
@@ -199,7 +207,7 @@ public class BandwidthDispatcher implements BandwidthDispatcherFacade, Runnable 
                         ? totalWeight / torrentWeight * 100
                         : 0;
                 sb.append("      ")
-                        .append(infoHash.getHumanReadable())
+                        .append(getTorrentName(infoHash))
                         .append(":")
                         .append("\n          ").append("current speed: ").append(humanReadableSpeed).append("/s")
                         .append("\n          ").append("overall upload: ").append(byteCountToDisplaySize(this.torrentsSeedStats.get(infoHash).getUploaded()))

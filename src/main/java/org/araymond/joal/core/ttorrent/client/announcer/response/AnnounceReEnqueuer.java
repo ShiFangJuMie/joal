@@ -25,25 +25,25 @@ public class AnnounceReEnqueuer implements AnnounceResponseHandler {
 
     @Override
     public void onAnnounceStartSuccess(final Announcer announcer, final SuccessAnnounceResponse result) {
-        log.debug("Enqueue torrent {} in regular queue", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Enqueue torrent {} in regular queue", announcer.getTorrentName());
         this.delayQueue.addOrReplace(createRegular(announcer), result.getInterval(), ChronoUnit.SECONDS);
     }
 
     @Override
     public void onAnnounceStartFails(final Announcer announcer, final Throwable throwable) {
-        log.debug("Enqueue torrent {} in start queue once again (because it failed)", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Enqueue torrent {} in start queue once again (because it failed)", announcer.getTorrentName());
         this.delayQueue.addOrReplace(createStart(announcer), announcer.getLastKnownInterval(), ChronoUnit.SECONDS);
     }
 
     @Override
     public void onAnnounceRegularSuccess(final Announcer announcer, final SuccessAnnounceResponse result) {
-        log.debug("Enqueue torrent {} in regular queue", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Enqueue torrent {} in regular queue", announcer.getTorrentName());
         this.delayQueue.addOrReplace(createRegular(announcer), result.getInterval(), ChronoUnit.SECONDS);
     }
 
     @Override
     public void onAnnounceRegularFails(final Announcer announcer, final Throwable throwable) {
-        log.debug("Enqueue torrent {} in regular queue once again (because it failed)", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Enqueue torrent {} in regular queue once again (because it failed)", announcer.getTorrentName());
         this.delayQueue.addOrReplace(createRegular(announcer), announcer.getLastKnownInterval(), ChronoUnit.SECONDS);
     }
 
@@ -54,7 +54,7 @@ public class AnnounceReEnqueuer implements AnnounceResponseHandler {
 
     @Override
     public void onAnnounceStopFails(final Announcer announcer, final Throwable throwable) {
-        log.debug("Enqueue torrent {} in stop queue once again (because it failed)", announcer.getTorrentInfoHash().getHumanReadable());
+        log.debug("Enqueue torrent {} in stop queue once again (because it failed)", announcer.getTorrentName());
         this.delayQueue.addOrReplace(createStop(announcer), 0, ChronoUnit.SECONDS);
     }
 
