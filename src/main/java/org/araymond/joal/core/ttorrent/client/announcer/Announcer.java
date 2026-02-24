@@ -81,9 +81,11 @@ public class Announcer implements AnnouncerFacade {
             this.consecutiveFails++;
             if (this.consecutiveFails >= 5) {  // TODO: move to config
                 log.warn("[{}] has failed to announce {} times in a row", this.getTorrentName(), this.consecutiveFails);
+                log.warn("Detailed announce failure reason: {}", e.getMessage());
                 throw new TooManyAnnouncesFailedInARowException(torrent);
             } else {
                 log.info("[{}] has failed to announce {}. time", this.getTorrentName(), this.consecutiveFails);
+                log.info("Detailed announce failure reason: {}", e.getMessage());
             }
 
             throw e;

@@ -39,10 +39,12 @@ public class TrackerResponseHandler implements ResponseHandler<TrackerMessage> {
                 // Parse and handle the response
                 return HTTPTrackerMessage.parse(ByteBuffer.wrap(outputStream.toByteArray()));
             } catch (final IOException ioe) {
-                final String message = "Error reading tracker response!";
+                final String bodyStr = new String(outputStream.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
+                final String message = "Error reading tracker response! HTTP Status: " + response.getStatusLine().getStatusCode() + ", Body: " + bodyStr;
                 throw new IOException(message, new AnnounceException(message, ioe));
             } catch (final TrackerMessage.MessageValidationException mve) {
-                final String message = "Tracker message violates expected protocol (" + mve.getMessage() + ")";
+                final String bodyStr = new String(outputStream.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
+                final String message = "Tracker message violates expected protocol (" + mve.getMessage() + ") HTTP Status: " + response.getStatusLine().getStatusCode() + ", Body: " + bodyStr;
                 throw new IOException(message, new AnnounceException(message, mve));
             }
         }
