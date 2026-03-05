@@ -125,6 +125,11 @@ public class Announcer implements AnnouncerFacade {
     }
 
     @Override
+    public String getTorrentFileName() {
+        return this.torrent.getFileName();
+    }
+
+    @Override
     public long getTorrentSize() {
         return this.torrent.getSize();
     }

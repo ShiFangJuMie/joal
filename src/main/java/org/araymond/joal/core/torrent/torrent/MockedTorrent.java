@@ -25,6 +25,7 @@ public class MockedTorrent extends Torrent {
     public static final Charset BYTE_ENCODING = Charset.forName(Torrent.BYTE_ENCODING);
 
     private final InfoHash torrentInfoHash;
+    private final String fileName;
 
     /**
      * Create a new torrent from meta-info binary data.
@@ -36,7 +37,7 @@ public class MockedTorrent extends Torrent {
      * @throws IOException When the info dictionary can't be read or
      *                     encoded and hashed back to create the torrent's SHA-1 hash.
      */
-    private MockedTorrent(final byte[] torrent) throws IOException, NoSuchAlgorithmException {
+    private MockedTorrent(final byte[] torrent, final String fileName) throws IOException, NoSuchAlgorithmException {
         super(torrent, false);
 
         try {
@@ -52,6 +53,7 @@ public class MockedTorrent extends Torrent {
         }
 
         this.torrentInfoHash = new InfoHash(this.getInfoHash());
+        this.fileName = fileName;
         
         this.clearUnneededBaseClassMemory();
     }
@@ -73,10 +75,10 @@ public class MockedTorrent extends Torrent {
 
     public static MockedTorrent fromFile(final File torrentFile) throws IOException, NoSuchAlgorithmException {
         final byte[] data = FileUtils.readFileToByteArray(torrentFile);
-        return new MockedTorrent(data);
+        return new MockedTorrent(data, torrentFile.getName());
     }
 
-    public static MockedTorrent fromBytes(final byte[] bytes) throws IOException, NoSuchAlgorithmException {
-        return new MockedTorrent(bytes);
+    public static MockedTorrent fromBytes(final byte[] bytes, final String fileName) throws IOException, NoSuchAlgorithmException {
+        return new MockedTorrent(bytes, fileName);
     }
 }

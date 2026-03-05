@@ -170,7 +170,7 @@ public class SeedManager {
 
     public void saveTorrentToDisk(final String name, final byte[] bytes) {
         try {
-            MockedTorrent.fromBytes(bytes);  // test if torrent file is valid or not
+            MockedTorrent.fromBytes(bytes, name);  // test if torrent file is valid or not
 
             final String torrentName = name.endsWith(".torrent") ? name : name + ".torrent";
             Files.write(this.joalFoldersPath.getTorrentsDirPath().resolve(torrentName), bytes, StandardOpenOption.CREATE);
