@@ -55,7 +55,7 @@ public class ConnectionHandlerTest {
 
     @Test
     public void shouldFallbackToLocalhostIfFailedToFetchAndNoIpWereNeverFetched() throws IOException {
-        final ServerSocketChannel channel = createMockedServerSocketChannel(49152);
+        final ServerSocketChannel channel = createMockedServerSocketChannel(56882);
 
         final ConnectionHandler handler = Mockito.spy(new ConnectionHandler());
         doReturn(Optional.empty()).when(handler).tryToFetchFromProviders();
@@ -67,7 +67,7 @@ public class ConnectionHandlerTest {
 
     @Test
     public void shouldUseFetchedIpIfSuccessful() throws IOException {
-        final ServerSocketChannel channel = createMockedServerSocketChannel(49152);
+        final ServerSocketChannel channel = createMockedServerSocketChannel(56882);
         final ConnectionHandler handler = Mockito.spy(new ConnectionHandler());
         doReturn(channel).when(handler).bindToPort();
         doReturn(Optional.of(InetAddress.getByName("168.168.168.168"))).when(handler).tryToFetchFromProviders();
@@ -79,7 +79,7 @@ public class ConnectionHandlerTest {
 
     @Test
     public void shouldFillPortAndIpOnInit() throws IOException {
-        final ServerSocketChannel channel = createMockedServerSocketChannel(65534);
+        final ServerSocketChannel channel = createMockedServerSocketChannel(56883);
         final ConnectionHandler handler = Mockito.spy(new ConnectionHandler());
         doReturn(channel).when(handler).bindToPort();
         doReturn(Optional.of(InetAddress.getByName("168.168.168.168"))).when(handler).tryToFetchFromProviders();
@@ -87,7 +87,7 @@ public class ConnectionHandlerTest {
         handler.start();
 
         assertThat(handler.getIpAddress().getHostAddress()).isEqualTo("168.168.168.168");
-        assertThat(handler.getPort()).isEqualTo(65534);
+        assertThat(handler.getPort()).isEqualTo(56883);
     }
 
     @Test
@@ -166,7 +166,7 @@ public class ConnectionHandlerTest {
 
     @Test
     public void shouldCloseChannelOnStop() throws IOException {
-        final ServerSocketChannel channel = createMockedServerSocketChannel(49152);
+        final ServerSocketChannel channel = createMockedServerSocketChannel(56882);
 
         final ConnectionHandler handler = Mockito.spy(new ConnectionHandler());
         doReturn(Optional.empty()).when(handler).tryToFetchFromProviders();

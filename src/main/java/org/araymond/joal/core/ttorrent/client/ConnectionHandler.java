@@ -34,8 +34,8 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 @Slf4j
 public class ConnectionHandler {
 
-    public static final int PORT_RANGE_START = 49152;
-    public static final int PORT_RANGE_END = 65534;
+    public static final int PORT_RANGE_START = 56882;
+    public static final int PORT_RANGE_END = 56883;
 
     private ServerSocketChannel channel;
     @Getter private InetAddress ipAddress;
