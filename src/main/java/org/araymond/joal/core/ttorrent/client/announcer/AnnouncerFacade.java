@@ -15,4 +15,5 @@ public interface AnnouncerFacade {
     String getTorrentFileName();
     long getTorrentSize();
     InfoHash getTorrentInfoHash();
+    String getTorrentComment();
 }

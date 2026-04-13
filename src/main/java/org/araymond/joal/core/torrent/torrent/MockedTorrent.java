@@ -26,6 +26,7 @@ public class MockedTorrent extends Torrent {
 
     private final InfoHash torrentInfoHash;
     private final String fileName;
+    private final String comment;
 
     /**
      * Create a new torrent from meta-info binary data.
@@ -55,6 +56,15 @@ public class MockedTorrent extends Torrent {
         this.torrentInfoHash = new InfoHash(this.getInfoHash());
         this.fileName = fileName;
         
+        String tempComment = null;
+        if (this.decoded != null && this.decoded.containsKey("comment")) {
+            try {
+                tempComment = this.decoded.get("comment").getString();
+            } catch (InvalidBEncodingException ignored) {
+            }
+        }
+        this.comment = tempComment;
+        
         this.clearUnneededBaseClassMemory();
     }
 
@@ -80,5 +90,10 @@ public class MockedTorrent extends Torrent {
 
     public static MockedTorrent fromBytes(final byte[] bytes, final String fileName) throws IOException, NoSuchAlgorithmException {
         return new MockedTorrent(bytes, fileName);
+    }
+
+    @Override
+    public String getComment() {
+        return this.comment;
     }
 }

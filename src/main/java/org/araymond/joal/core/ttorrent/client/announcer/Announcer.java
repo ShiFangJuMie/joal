@@ -139,6 +139,11 @@ public class Announcer implements AnnouncerFacade {
         return this.getTorrent().getTorrentInfoHash();
     }
 
+    @Override
+    public String getTorrentComment() {
+        return this.torrent.getComment();
+    }
+
     public boolean hasReachedUploadRatioLimit() {
         if (uploadRatioTarget == -1f) {
             return false;

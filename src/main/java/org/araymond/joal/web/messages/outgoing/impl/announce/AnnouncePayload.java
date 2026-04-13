@@ -18,6 +18,7 @@ public abstract class AnnouncePayload implements MessagePayload {
     private final LocalDateTime lastAnnouncedAt;
     private final Integer lastKnownLeechers;
     private final Integer lastKnownSeeders;
+    private final String comment;
 
     protected AnnouncePayload(final AnnouncerFacade announcerFacade) {
         this.infoHash = announcerFacade.getTorrentInfoHash();
@@ -29,5 +30,6 @@ public abstract class AnnouncePayload implements MessagePayload {
         this.lastAnnouncedAt = announcerFacade.getLastAnnouncedAt().orElse(null);
         this.lastKnownLeechers = announcerFacade.getLastKnownLeechers().orElse(null);
         this.lastKnownSeeders = announcerFacade.getLastKnownSeeders().orElse(null);
+        this.comment = announcerFacade.getTorrentComment();
     }
 }

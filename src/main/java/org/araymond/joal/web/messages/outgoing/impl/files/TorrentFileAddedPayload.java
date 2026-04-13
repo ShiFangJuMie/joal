@@ -13,10 +13,12 @@ public class TorrentFileAddedPayload implements MessagePayload {
     private final InfoHash infoHash;
     private final String name;
     private final Long size;
+    private final String comment;
 
     public TorrentFileAddedPayload(final TorrentFileAddedEvent event) {
         this.infoHash = event.getTorrent().getTorrentInfoHash();
         this.name = event.getTorrent().getName();
         this.size = event.getTorrent().getSize();
+        this.comment = event.getTorrent().getComment();
     }
 }
