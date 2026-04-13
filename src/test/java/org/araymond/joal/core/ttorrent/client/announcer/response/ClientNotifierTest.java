@@ -18,7 +18,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldNotifyNoMorePeersIfAnnounceStartedResponseHasNoLeechers() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         final InfoHash infoHash = new InfoHash("qjfqjbqdui".getBytes());
         final Announcer announcer = mock(Announcer.class);
@@ -36,7 +38,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldNotifyNoMorePeersIfAnnounceStartedResponseHasNoSeeders() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         final InfoHash infoHash = new InfoHash("qjfqjbqdui".getBytes());
         final Announcer announcer = mock(Announcer.class);
@@ -55,7 +59,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldDoNothingIfAnnounceStartedHasPeers() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         final InfoHash infoHash = new InfoHash("qjfqjbqdui".getBytes());
         final Announcer announcer = mock(Announcer.class);
@@ -73,7 +79,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldNotifyNoMorePeersIfAnnounceRegularResponseHasNoLeechers() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         final InfoHash infoHash = new InfoHash("qjfqjbqdui".getBytes());
         final Announcer announcer = mock(Announcer.class);
@@ -91,7 +99,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldNotifyNoMorePeersIfAnnounceRegularResponseHasNoSeeders() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         final InfoHash infoHash = new InfoHash("qjfqjbqdui".getBytes());
         final Announcer announcer = mock(Announcer.class);
@@ -110,7 +120,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldDoNothingIfAnnounceRegularHasPeers() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         final InfoHash infoHash = new InfoHash("qjfqjbqdui".getBytes());
         final Announcer announcer = mock(Announcer.class);
@@ -126,7 +138,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldNotifyTorrentHasStoppedOnStopSuccess() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         final Announcer announcer = mock(Announcer.class);
 
@@ -139,7 +153,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldNotifyTorrentFailedTooManyTimes() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         final Announcer announcer = mock(Announcer.class);
 
@@ -153,7 +169,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldDoNothingOnWillAnnounce() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         clientNotifier.onAnnouncerWillAnnounce(null, null);
         Mockito.verifyNoMoreInteractions(client);
@@ -163,7 +181,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldDoNothingOnStartFails() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         clientNotifier.onAnnounceStartFails(null, null);
         Mockito.verifyNoMoreInteractions(client);
@@ -173,7 +193,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldDoNothingOnRegularFails() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         clientNotifier.onAnnounceRegularFails(null, null);
         Mockito.verifyNoMoreInteractions(client);
@@ -183,7 +205,9 @@ public class ClientNotifierTest {
     @Test
     public void shouldDoNothingOnStopFailes() {
         final Client client = mock(Client.class);
-        final ClientNotifier clientNotifier = new ClientNotifier(client);
+        final org.araymond.joal.core.config.AppConfiguration appConfiguration = mock(org.araymond.joal.core.config.AppConfiguration.class);
+        doReturn(0.0f).when(appConfiguration).getAutoPauseOnPeerRatio();
+        final ClientNotifier clientNotifier = new ClientNotifier(client, appConfiguration);
 
         clientNotifier.onAnnounceStopFails(null, null);
         Mockito.verifyNoMoreInteractions(client);

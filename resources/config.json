@@ -1,8 +1,9 @@
 {
-  "minUploadRate": 30,
-  "maxUploadRate": 170,
-  "simultaneousSeed": 200,
-  "client": "utorrent-3.5.0_43916.client",
-  "keepTorrentWithZeroLeechers": true,
-  "uploadRatioTarget": -1.0
+  "minUploadRate" : 0,
+  "maxUploadRate" : 0,
+  "simultaneousSeed" : 3000,
+  "client" : "qbittorrent-5.1.4.client",
+  "keepTorrentWithZeroLeechers" : true,
+  "uploadRatioTarget" : -1.0,
+  "autoPauseOnPeerRatio": 0.5
 }
