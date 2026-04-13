@@ -105,12 +105,13 @@ public class JoalConfigProviderTest {
             final JoalConfigProvider provider = new JoalConfigProvider(new ObjectMapper(), rewritableJoalFoldersPath, Mockito.mock(ApplicationEventPublisher.class));
             final Random rand = new Random();
             final AppConfiguration newConf = new AppConfiguration(
-                    rand.longs(1, 200, 0.0f).findFirst().getAsLong(),
+                    rand.longs(1, 200).findFirst().getAsLong(),
                     rand.longs(201, 400).findFirst().getAsLong(),
                     rand.ints(1, 5).findFirst().getAsInt(),
                     RandomStringUtils.random(60),
                     false,
-                    1f
+                    1f,
+                    0.0f
             );
 
             provider.saveNewConf(newConf);
