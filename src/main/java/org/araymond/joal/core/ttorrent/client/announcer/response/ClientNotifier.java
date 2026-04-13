@@ -48,8 +48,7 @@ public class ClientNotifier implements AnnounceResponseHandler {
 
         float ratio = this.appConfiguration.getAutoPauseOnPeerRatio();
         if (ratio > 0f && result.getSeeders() <= 5) {
-            int realSeeders = Math.max(0, result.getSeeders() - 1);
-            if (result.getLeechers() > realSeeders * ratio) {
+            if (result.getLeechers() > result.getSeeders() * ratio) {
                 this.client.onSeedersAndLeechersRatioNotSatisfied(announcer.getTorrentInfoHash());
                 return false;
             }
