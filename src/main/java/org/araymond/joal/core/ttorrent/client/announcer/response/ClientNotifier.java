@@ -3,6 +3,7 @@ package org.araymond.joal.core.ttorrent.client.announcer.response;
 import com.turn.ttorrent.common.protocol.TrackerMessage.AnnounceRequestMessage.RequestEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.araymond.joal.core.config.AppConfiguration;
 import org.araymond.joal.core.ttorrent.client.Client;
 import org.araymond.joal.core.ttorrent.client.announcer.Announcer;
 import org.araymond.joal.core.ttorrent.client.announcer.exceptions.TooManyAnnouncesFailedInARowException;
@@ -12,6 +13,7 @@ import org.araymond.joal.core.ttorrent.client.announcer.request.SuccessAnnounceR
 @RequiredArgsConstructor
 public class ClientNotifier implements AnnounceResponseHandler {
     private final Client client;
+    private final AppConfiguration appConfiguration;
 
     @Override
     public void onAnnouncerWillAnnounce(final Announcer announcer, final RequestEvent event) {
@@ -20,9 +22,7 @@ public class ClientNotifier implements AnnounceResponseHandler {
 
     @Override
     public void onAnnounceStartSuccess(final Announcer announcer, final SuccessAnnounceResponse result) {
-        if (result.getSeeders() < 1 || result.getLeechers() < 1) {
-            this.client.onNoMorePeers(announcer.getTorrentInfoHash());
-        }
+        checkPeersRatioAndLimit(announcer, result);
     }
 
     @Override
@@ -32,13 +32,29 @@ public class ClientNotifier implements AnnounceResponseHandler {
 
     @Override
     public void onAnnounceRegularSuccess(final Announcer announcer, final SuccessAnnounceResponse result) {
-        if (result.getSeeders() < 1 || result.getLeechers() < 1) {
-            this.client.onNoMorePeers(announcer.getTorrentInfoHash());
+        if (!checkPeersRatioAndLimit(announcer, result)) {
             return;
         }
         if (announcer.hasReachedUploadRatioLimit()) {
             this.client.onUploadRatioLimitReached(announcer.getTorrentInfoHash());
         }
+    }
+
+    private boolean checkPeersRatioAndLimit(final Announcer announcer, final SuccessAnnounceResponse result) {
+        if (result.getSeeders() < 1 || result.getLeechers() < 1) {
+            this.client.onNoMorePeers(announcer.getTorrentInfoHash());
+            return false;
+        }
+
+        float ratio = this.appConfiguration.getAutoPauseOnPeerRatio();
+        if (ratio > 0f && result.getSeeders() <= 5) {
+            int realSeeders = Math.max(0, result.getSeeders() - 1);
+            if (result.getLeechers() > realSeeders * ratio) {
+                this.client.onSeedersAndLeechersRatioNotSatisfied(announcer.getTorrentInfoHash());
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

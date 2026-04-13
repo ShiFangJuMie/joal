@@ -64,7 +64,7 @@ public final class ClientBuilder {
 
         final Client client = new Client(this.appConfiguration, this.torrentFileProvider, announcerExecutor,
                 this.delayQueue, this.announcerFactory, this.eventPublisher);
-        announceResponseCallback.appendHandler(new ClientNotifier(client));
+        announceResponseCallback.appendHandler(new ClientNotifier(client, this.appConfiguration));
 
         return client;
     }

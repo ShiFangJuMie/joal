@@ -165,6 +165,34 @@ public class TorrentFileProvider extends FileAlterationListenerAdaptor {
                         () -> log.warn("Cannot move torrent [{}] to archive folder. Torrent file seems not to be registered in TorrentFileProvider", infoHash));
     }
 
+    void moveToArchivePausedFolder(final File torrentFile) {
+        if (torrentFile == null || !torrentFile.exists()) {
+            return;
+        }
+        this.onFileDelete(torrentFile);
+
+        try {
+            Path pausedFolder = archiveFolder.resolve("paused");
+            if (!Files.exists(pausedFolder)) {
+                Files.createDirectory(pausedFolder);
+            }
+            Path moveTarget = pausedFolder.resolve(torrentFile.getName());
+            Files.move(torrentFile.toPath(), moveTarget, REPLACE_EXISTING);
+            log.info("Successfully moved file [{}] to archived/paused folder", torrentFile.getAbsolutePath());
+        } catch (final IOException e) {
+            log.error("Failed to archive file [{}] to paused folder", torrentFile.getAbsolutePath(), e);
+        }
+    }
+
+    public void moveToArchivePausedFolder(final InfoHash infoHash) {
+        this.torrentFiles.entrySet().stream()
+                .filter(entry -> entry.getValue().getTorrentInfoHash().equals(infoHash))
+                .findAny()
+                .map(Map.Entry::getKey)
+                .ifPresentOrElse(this::moveToArchivePausedFolder,
+                        () -> log.warn("Cannot move torrent [{}] to archive/paused folder. Torrent file seems not to be registered in TorrentFileProvider", infoHash));
+    }
+
     public int getTorrentCount() {
         return this.torrentFiles.size();
     }

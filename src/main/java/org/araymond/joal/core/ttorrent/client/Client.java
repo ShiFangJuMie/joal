@@ -188,6 +188,11 @@ public class Client implements TorrentFileChangeAware, ClientFacade {
         this.torrentFileProvider.moveToArchiveFolder(infoHash);
     }
 
+    public void onSeedersAndLeechersRatioNotSatisfied(final InfoHash infoHash) {
+        log.info("Pausing torrent [{}] since leechers > seeders * configured ratio", infoHash);
+        this.torrentFileProvider.moveToArchivePausedFolder(infoHash);
+    }
+
     public void onTorrentHasStopped(final Announcer stoppedAnnouncer) {
         if (this.stop) {
             this.currentlySeedingAnnouncers.remove(stoppedAnnouncer);
